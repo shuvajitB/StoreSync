@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17
+    container_name: storesync-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: storesync_user
+      POSTGRES_PASSWORD: local_dev_password
+      POSTGRES_DB: storesync_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - storesync_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U storesync_user -d storesync_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  storesync_postgres_data:
