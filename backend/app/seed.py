@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import Business, Store, User, UserStoreAccess
 from app.core.security import hash_password
+from app.core.config import settings
 
 
 STORES = [
@@ -24,21 +25,21 @@ DEMO_USERS = [
     {
         "full_name": "AtoZ Business Owner",
         "email": "admin@atozretail.demo",
-        "password": "Admin@12345",
+        "password": settings.DEMO_ADMIN_PASSWORD,
         "role": "business_owner",
         "store_code": None,
     },
     {
         "full_name": "Downtown Store Manager",
         "email": "manager@atozretail.demo",
-        "password": "Manager@12345",
+        "password": settings.DEMO_MANAGER_PASSWORD,
         "role": "store_manager",
         "store_code": "ATZ001",
     },
     {
         "full_name": "Downtown Cashier",
         "email": "cashier@atozretail.demo",
-        "password": "Cashier@12345",
+        "password": settings.DEMO_CASHIER_PASSWORD,
         "role": "cashier",
         "store_code": "ATZ001",
     },
@@ -89,6 +90,12 @@ def seed_database():
             ).first()
 
             if not user:
+                if not user_data["password"]:
+                    raise RuntimeError(
+                        f"Missing local demo password for {user_data['email']}. "
+                        "Configure it in backend/.env."
+                    )
+
                 user = User(
                     business_id=business.id,
                     full_name=user_data["full_name"],

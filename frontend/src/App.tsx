@@ -55,8 +55,8 @@ function App() {
 
   // Authentication
   const [user, setUser] = useState<User | null>(null);
-  const [email, setEmail] = useState("admin@atozretail.demo");
-  const [password, setPassword] = useState("Admin@12345");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -278,12 +278,7 @@ function App() {
                 )}
               </button>
             </form>
-
-            <div className="demo-note">
-              <strong>Demo account</strong>
-              <span>admin@atozretail.demo</span>
-              <span>Admin@12345</span>
-            </div>
+ 
           </div>
 
           <p className="login-copyright">

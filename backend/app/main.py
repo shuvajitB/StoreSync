@@ -13,9 +13,9 @@ from app.seed import seed_database
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initial development setup.
-    Base.metadata.create_all(bind=engine)
-    seed_database()
+    if settings.ENVIRONMENT.lower() != "production":
+        Base.metadata.create_all(bind=engine)
+        seed_database()
 
     yield
 
@@ -28,9 +28,15 @@ app = FastAPI(
 )
 
 
+allowed_origins = [
+    origin.strip()
+    for origin in settings.FRONTEND_URL.split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
